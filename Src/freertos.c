@@ -25,7 +25,7 @@
 #include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */     
+/* USER CODE BEGIN Includes */
 
 #include "calibrate_task.h"
 #include "chassis_task.h"
@@ -148,42 +148,42 @@ void MX_FREERTOS_Init(void) {
   testHandle = osThreadCreate(osThread(test), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
-  /* add threads, ... */
-    osThreadDef(cali, calibrate_task, osPriorityNormal, 0, 512);
-    calibrate_tast_handle = osThreadCreate(osThread(cali), NULL);
+  // /* add threads, ... */
+  //   osThreadDef(cali, calibrate_task, osPriorityNormal, 0, 512);
+  //   calibrate_tast_handle = osThreadCreate(osThread(cali), NULL);
 
-    osThreadDef(ChassisTask, chassis_task, osPriorityAboveNormal, 0, 512);
-    chassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
+  //   osThreadDef(ChassisTask, chassis_task, osPriorityAboveNormal, 0, 512);
+  //   chassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
 
-    osThreadDef(DETECT, detect_task, osPriorityNormal, 0, 256);
-    detect_handle = osThreadCreate(osThread(DETECT), NULL);
+  //   osThreadDef(DETECT, detect_task, osPriorityNormal, 0, 256);
+  //   detect_handle = osThreadCreate(osThread(DETECT), NULL);
 
-    osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
-    gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
+  //   osThreadDef(gimbalTask, gimbal_task, osPriorityHigh, 0, 512);
+  //   gimbalTaskHandle = osThreadCreate(osThread(gimbalTask), NULL);
 
-    osThreadDef(imuTask, INS_task, osPriorityRealtime, 0, 1024);
-    imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);
+  //   osThreadDef(imuTask, INS_task, osPriorityRealtime, 0, 1024);
+  //   imuTaskHandle = osThreadCreate(osThread(imuTask), NULL);
 
     osThreadDef(led, led_RGB_flow_task, osPriorityNormal, 0, 256);
     led_RGB_flow_handle = osThreadCreate(osThread(led), NULL);
 
 
-    osThreadDef(OLED, oled_task, osPriorityLow, 0, 256);
-    oled_handle = osThreadCreate(osThread(OLED), NULL);
+  //   osThreadDef(OLED, oled_task, osPriorityLow, 0, 256);
+  //   oled_handle = osThreadCreate(osThread(OLED), NULL);
 
 
-    osThreadDef(REFEREE, referee_usart_task, osPriorityNormal, 0, 128);
-    referee_usart_task_handle = osThreadCreate(osThread(REFEREE), NULL);
+  //   osThreadDef(REFEREE, referee_usart_task, osPriorityNormal, 0, 128);
+  //   referee_usart_task_handle = osThreadCreate(osThread(REFEREE), NULL);
 
 
-    osThreadDef(USBTask, usb_task, osPriorityNormal, 0, 128);
-    usb_task_handle = osThreadCreate(osThread(USBTask), NULL);
+  //   osThreadDef(USBTask, usb_task, osPriorityNormal, 0, 128);
+  //   usb_task_handle = osThreadCreate(osThread(USBTask), NULL);
 
-    osThreadDef(BATTERY_VOLTAGE, battery_voltage_task, osPriorityNormal, 0, 128);
-    battery_voltage_handle = osThreadCreate(osThread(BATTERY_VOLTAGE), NULL);
+  //   osThreadDef(BATTERY_VOLTAGE, battery_voltage_task, osPriorityNormal, 0, 128);
+  //   battery_voltage_handle = osThreadCreate(osThread(BATTERY_VOLTAGE), NULL);
 
-    osThreadDef(SERVO, servo_task, osPriorityNormal, 0, 128);
-    servo_task_handle = osThreadCreate(osThread(SERVO), NULL);
+  //   osThreadDef(SERVO, servo_task, osPriorityNormal, 0, 128);
+  //   servo_task_handle = osThreadCreate(osThread(SERVO), NULL);
 
 
 
@@ -202,7 +202,6 @@ __weak void test_task(void const * argument)
 {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
-
   /* USER CODE BEGIN test_task */
   /* Infinite loop */
   for(;;)

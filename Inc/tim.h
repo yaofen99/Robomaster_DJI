@@ -1,12 +1,12 @@
 /**
   ******************************************************************************
-  * File Name          : TIM.h
-  * Description        : This file provides code for the configuration
-  *                      of the TIM instances.
+  * @file    tim.h
+  * @brief   This file contains all the function prototypes for
+  *          the tim.c file
   ******************************************************************************
   * @attention
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2021 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -17,10 +17,11 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __tim_H
-#define __tim_H
+#ifndef __TIM_H__
+#define __TIM_H__
+
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
@@ -47,9 +48,9 @@ void MX_TIM4_Init(void);
 void MX_TIM5_Init(void);
 void MX_TIM8_Init(void);
 void MX_TIM10_Init(void);
-                        
+
 void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
-                                                                                                                        
+
 /* USER CODE BEGIN Prototypes */
 
 /* USER CODE END Prototypes */
@@ -57,14 +58,7 @@ void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 #ifdef __cplusplus
 }
 #endif
-#endif /*__ tim_H */
 
-/**
-  * @}
-  */
-
-/**
-  * @}
-  */
+#endif /* __TIM_H__ */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

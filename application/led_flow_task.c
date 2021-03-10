@@ -1,3 +1,11 @@
+/*
+ * @Author: your name
+ * @Date: 2021-03-02 20:54:05
+ * @LastEditTime: 2021-03-10 10:48:28
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \MDK-ARMc:\Users\42517\Documents\GitHub\standard_tpye_c\application\led_flow_task.c
+ */
 /**
   ****************************(C) COPYRIGHT 2019 DJI****************************
   * @file       led_trigger_task.c/h
@@ -19,6 +27,19 @@
 #include "cmsis_os.h"
 #include "main.h"
 
+#include "gimbal_task.h"
+
+#include "cmsis_os.h"
+
+#include "arm_math.h"
+#include "CAN_receive.h"
+#include "user_lib.h"
+#include "detect_task.h"
+#include "remote_control.h"
+#include "gimbal_behaviour.h"
+#include "INS_task.h"
+#include "shoot.h"
+#include "pid.h"
 
 #define RGB_FLOW_COLOR_CHANGE_TIME  1000
 #define RGB_FLOW_COLOR_LENGHT   6
@@ -73,7 +94,9 @@ void led_RGB_flow_task(void const * argument)
                 aRGB_led_show(aRGB);
                 osDelay(1);
             }
+            
         }
+				CAN_cmd_distance(20, 20, 20, 20);
     }
 }
 

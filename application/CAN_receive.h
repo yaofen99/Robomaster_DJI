@@ -38,6 +38,7 @@ typedef enum
     CAN_YAW_MOTOR_ID = 0x205,
     CAN_PIT_MOTOR_ID = 0x206,
     CAN_TRIGGER_MOTOR_ID = 0x207,
+    CAN_IOE_SR05 = 0X208,
     CAN_GIMBAL_ALL_ID = 0x1FF,
 
 } can_msg_id_e;
@@ -52,6 +53,11 @@ typedef struct
     int16_t last_ecd;
 } motor_measure_t;
 
+typedef struct
+{
+    uint16_t distance_to_right;
+    uint16_t distance_to_left;
+} distance_measure_t;
 
 /**
   * @brief          send control current of motor (0x205, 0x206, 0x207, 0x208)
@@ -70,6 +76,7 @@ typedef struct
   * @retval         none
   */
 extern void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
+extern void CAN_cmd_distance(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev);
 
 /**
   * @brief          send CAN packet of ID 0x700, it will set chassis motor 3508 to quick ID setting

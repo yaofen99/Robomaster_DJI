@@ -21,7 +21,8 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "stm32f4xx_it.h"
-#include "cmsis_os.h"
+#include "FreeRTOS.h"
+#include "task.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 /* USER CODE END Includes */
@@ -61,14 +62,28 @@ extern PCD_HandleTypeDef hpcd_USB_OTG_FS;
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
 extern DMA_HandleTypeDef hdma_usart1_tx;
-extern DMA_HandleTypeDef hdma_usart6_rx;
 extern DMA_HandleTypeDef hdma_usart6_tx;
+extern DMA_HandleTypeDef hdma_usart6_rx;
+extern UART_HandleTypeDef huart1;
 /* USER CODE BEGIN EV */
+#define MAX_REC_LENGTH 10
+#define REC_LENGTH 10
+
+
+unsigned char UART1_Rx_Buf[MAX_REC_LENGTH] = {0}; //USART1存储接收数据
+unsigned char UART1_Rx_flg = 0;                   //USART1接收完成标志
+unsigned int  UART1_Rx_cnt = 0;                   //USART1接受数据计数�?
+unsigned char UART1_temp[REC_LENGTH] = {0};       //USART1接收数据缓存
+
+unsigned char UART6_Rx_Buf[MAX_REC_LENGTH] = {0}; //USART1存储接收数据
+unsigned char UART6_Rx_flg = 0;                   //USART1接收完成标志
+unsigned int  UART6_Rx_cnt = 0;                   //USART1接受数据计数�?
+unsigned char UART6_temp[REC_LENGTH] = {0};       //USART1接收数据缓存
 
 /* USER CODE END EV */
 
 /******************************************************************************/
-/*           Cortex-M4 Processor Interruption and Exception Handlers          */ 
+/*           Cortex-M4 Processor Interruption and Exception Handlers          */
 /******************************************************************************/
 /**
   * @brief This function handles Non maskable interrupt.
@@ -165,7 +180,14 @@ void SysTick_Handler(void)
 
   /* USER CODE END SysTick_IRQn 0 */
   HAL_IncTick();
-  osSystickHandler();
+#if (INCLUDE_xTaskGetSchedulerState == 1 )
+  if (xTaskGetSchedulerState() != taskSCHEDULER_NOT_STARTED)
+  {
+#endif /* INCLUDE_xTaskGetSchedulerState */
+  xPortSysTickHandler();
+#if (INCLUDE_xTaskGetSchedulerState == 1 )
+  }
+#endif /* INCLUDE_xTaskGetSchedulerState */
   /* USER CODE BEGIN SysTick_IRQn 1 */
 
   /* USER CODE END SysTick_IRQn 1 */
@@ -246,6 +268,20 @@ void EXTI9_5_IRQHandler(void)
   /* USER CODE BEGIN EXTI9_5_IRQn 1 */
 
   /* USER CODE END EXTI9_5_IRQn 1 */
+}
+
+/**
+  * @brief This function handles USART1 global interrupt.
+  */
+void USART1_IRQHandler(void)
+{
+  /* USER CODE BEGIN USART1_IRQn 0 */
+ 
+  /* USER CODE END USART1_IRQn 0 */
+  HAL_UART_IRQHandler(&huart1);
+  /* USER CODE BEGIN USART1_IRQn 1 */
+	
+  /* USER CODE END USART1_IRQn 1 */
 }
 
 /**

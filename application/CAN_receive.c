@@ -30,6 +30,8 @@
 
 extern CAN_HandleTypeDef hcan1;
 extern CAN_HandleTypeDef hcan2;
+
+
 //motor data read
 #define get_motor_measure(ptr, data)                                    \
     {                                                                   \
@@ -39,6 +41,11 @@ extern CAN_HandleTypeDef hcan2;
         (ptr)->given_current = (uint16_t)((data)[4] << 8 | (data)[5]);  \
         (ptr)->temperate = (data)[6];                                   \
     }
+#define get_distance_measure(ptr, data)                                    \
+    {                                                                   \
+        (ptr)->distance_to_left = (uint16_t)((data)[0] << 8 | (data)[1]);            \
+        (ptr)->distance_to_right = (uint16_t)((data)[2] << 8 | (data)[3]);      \
+    }
 /*
 motor data,  0:chassis motor1 3508;1:chassis motor3 3508;2:chassis motor3 3508;3:chassis motor4 3508;
 4:yaw gimbal motor 6020;5:pitch gimbal motor 6020;6:trigger motor 2006;
@@ -46,8 +53,11 @@ motor data,  0:chassis motor1 3508;1:chassis motor3 3508;2:chassis motor3 3508;3
 4:yaw云台电机 6020电机; 5:pitch云台电机 6020电机; 6:拨弹电机 2006电机*/
 static motor_measure_t motor_chassis[7];
 
+static distance_measure_t distance_measure;
 static CAN_TxHeaderTypeDef  gimbal_tx_message;
+static CAN_TxHeaderTypeDef  distance_tx_message;
 static uint8_t              gimbal_can_send_data[8];
+static uint8_t              distance_can_send_data[8];
 static CAN_TxHeaderTypeDef  chassis_tx_message;
 static uint8_t              chassis_can_send_data[8];
 
@@ -82,8 +92,13 @@ void HAL_CAN_RxFifo0MsgPendingCallback(CAN_HandleTypeDef *hcan)
             //get motor id
             i = rx_header.StdId - CAN_3508_M1_ID;
             get_motor_measure(&motor_chassis[i], rx_data);
-            detect_hook(CHASSIS_MOTOR1_TOE + i);
+            // detect_hook(CHASSIS_MOTOR1_TOE + i);
             break;
+        }
+        case CAN_IOE_SR05:
+        {
+          get_distance_measure(&distance_measure, rx_data);
+          break;
         }
 
         default:
@@ -122,12 +137,33 @@ void CAN_cmd_gimbal(int16_t yaw, int16_t pitch, int16_t shoot, int16_t rev)
     gimbal_can_send_data[1] = yaw;
     gimbal_can_send_data[2] = (pitch >> 8);
     gimbal_can_send_data[3] = pitch;
-    gimbal_can_send_data[4] = (shoot >> 8);
-    gimbal_can_send_data[5] = shoot;
-    gimbal_can_send_data[6] = (rev >> 8);
-    gimbal_can_send_data[7] = rev;
+    gimbal_can_send_data[4] = 0;
+    gimbal_can_send_data[5] = 0;
+    gimbal_can_send_data[6] = 0;
+    gimbal_can_send_data[7] = 0;
     HAL_CAN_AddTxMessage(&GIMBAL_CAN, &gimbal_tx_message, gimbal_can_send_data, &send_mail_box);
 }
+
+void CAN_cmd_distance(int16_t distance_to_left, int16_t distance_to_right, int16_t shoot, int16_t rev)
+{
+    uint32_t send_mail_box;
+    distance_tx_message.StdId = CAN_IOE_SR05;
+    distance_tx_message.IDE = CAN_ID_STD;
+    distance_tx_message.RTR = CAN_RTR_DATA;
+    distance_tx_message.DLC = 0x08;
+    distance_can_send_data[0] = (distance_to_left>> 8);
+    distance_can_send_data[1] = distance_to_left;
+    distance_can_send_data[2] = (distance_to_right>> 8);
+    distance_can_send_data[3] = distance_to_right;
+    distance_can_send_data[4] = 0;
+    distance_can_send_data[5] = 0;
+    distance_can_send_data[6] = 0;
+    distance_can_send_data[7] = 0;
+    HAL_CAN_AddTxMessage(&GIMBAL_CAN, &distance_tx_message, distance_can_send_data, &send_mail_box);
+}
+
+
+
 
 /**
   * @brief          send CAN packet of ID 0x700, it will set chassis motor 3508 to quick ID setting
